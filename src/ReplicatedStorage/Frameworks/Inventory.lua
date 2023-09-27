@@ -1,3 +1,5 @@
+local StarterGui = game:GetService("StarterGui")
+
 local _I = {}
 
 local Frameworks
@@ -28,13 +30,13 @@ function _I.Init(Frameworks_)
 	Input = Frameworks.Input
 	Tools = Frameworks.Tools
 	
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+	
 	for Index, Keycode in pairs(Keycodes) do
 		local InputHandler = Input.New(Enum.KeyCode[Keycode], true)
 		InputHandler.TriggerEvent:Connect(function()
 			local ToolName = MainInventory[Index]
-			if ToolName then
-				Tools.Equip(ToolName)								
-			end
+			if ToolName then Tools.Equip(ToolName) end
 		end)
 	end
 end

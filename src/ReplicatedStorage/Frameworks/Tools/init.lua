@@ -1,5 +1,8 @@
-	local ToolsInfo = require(script:WaitForChild("Info"))
-local ToolTypes = script:WaitForChild("Types")
+local RS = game:GetService("ReplicatedStorage")
+local Modules = RS:WaitForChild("Modules")
+
+local ToolsInfo = require(Modules:WaitForChild("ToolsInfo"))
+local ToolTypes = script
 
 local _T = {}
 
@@ -13,12 +16,11 @@ function _T.Equip(ToolName)
 	local Info = ToolsInfo[ToolName]
 	if Info then else return end
 	
-	local Type = Info.Type or "Weapon"
+	local Type = Info.Type or "Guns"
 	local Module = ToolTypes:FindFirstChild(Type)
 	if Module then else return end
 	
-	local RequiredModule = require(Module)
-	RequiredModule(Frameworks, ToolName, Info)
+	require(Module)(Frameworks, ToolName, Info)
 end
 
 return _T

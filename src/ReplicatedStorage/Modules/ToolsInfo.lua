@@ -1,5 +1,5 @@
 return {
 	["Pistol"] = {
-		Type = "Weapon",
+		Type = "Guns",
 	}
 }

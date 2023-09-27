@@ -28,8 +28,6 @@ function _I.New(Input, State_)
 		ActiveInputs[Name] = {}
 	end
 	
-	print(ActiveInputs)
-	
 	table.insert(ActiveInputs[Name], setmetatable({
 		Name = Name,
 		State = State,
@@ -37,7 +35,6 @@ function _I.New(Input, State_)
 	}, _I))
 	
 	local Index = #ActiveInputs[Name]
-	print(Index)
 	ActiveInputs[Name][Index]["Index"] = Index
 	
 	return ActiveInputs[Name][Index]
