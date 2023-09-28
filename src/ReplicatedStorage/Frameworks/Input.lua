@@ -44,7 +44,7 @@ function _I:Destroy()
 	local Name = self.Name
 	local Index = self.Index
 	
-	self.TriggerEvent:Disconnect()
+	self.TriggerEvent:DisconnectAll()
 	
 	ActiveInputs[Name][Index] = nil
 	

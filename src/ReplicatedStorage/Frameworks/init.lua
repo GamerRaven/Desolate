@@ -11,8 +11,12 @@ end
 
 local function RunFramework(Framework)
 	if Framework then else return end
-	if type(Framework) == "table" and (Framework["Init"]) then
-		task.spawn(function() Framework.Init(Frameworks) end)
+	if type(Framework) == "table" then
+		if (Framework["Init"]) then
+			task.spawn(function() Framework.Init(Frameworks) end)
+		elseif (Framework["InitMethod"]) then
+			task.spawn(function() Framework:InitMethod(Frameworks) end)
+		end
 	end
 end
 	

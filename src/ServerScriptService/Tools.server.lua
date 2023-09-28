@@ -10,6 +10,7 @@ local ToolsResources = require(ToolTypes:WaitForChild("Resources"))
 
 local Net = require(RS:WaitForChild("Net"))
 local ToolEquip = Net.ReferenceBridge("ToolEquip")
+local ToolUnequip = Net.ReferenceBridge("ToolUnequip")
 
 local GunFire = Net.ReferenceBridge("GunFire")
 
@@ -32,6 +33,15 @@ ToolEquip.OnServerInvoke = function(Player, ToolName)
 	
 	return PlayersEquip[Player].ClientData
 end
+
+ToolUnequip:Connect(function(Player)
+	local Info = PlayersEquip[Player]
+	if Info then
+		Info.Unequipped()
+	end
+	
+	PlayersEquip[Player] = nil
+end)
 
 Players.PlayerRemoving:Connect(function(Player)
 	if PlayersEquip[Player] then
