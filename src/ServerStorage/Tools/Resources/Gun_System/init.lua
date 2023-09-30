@@ -23,11 +23,13 @@ local PlayersEquipped = {}
 local Resources
 local Cooldowns
 local Utility
+local Effects
 
 function _GS.Init(Resources_)
 	Resources = Resources_
 	Utility = Resources.Utility
 	Cooldowns = Utility.Cooldowns
+	Effects = Utility.Effects
 end
 
 local function GetConfig(Config_)
@@ -36,6 +38,16 @@ local function GetConfig(Config_)
 		NewTable[Index] = Config_[Index] or Value
 	end
 	return NewTable
+end
+
+local function GetValue(V)
+	if typeof(V) == "table" then
+		local Min = V[1]
+		local Max = V[2]
+		return RNG:NextNumber(Min, Max)
+		
+		else return V
+	end
 end
 
 function SetupCaster(Player, Config)
@@ -49,9 +61,12 @@ function SetupCaster(Player, Config)
 		local HitPart = raycastResult.Instance
 		local HitPoint = raycastResult.Position
 		local Normal = raycastResult.Normal
-		if HitPart ~= nil and HitPart.Parent ~= nil then 
-			local Humanoid = HitPart.Parent:FindFirstChildOfClass("Humanoid")
+		
+		local EnemyChar = HitPart.Parent
+		if HitPart ~= nil and EnemyChar ~= nil then 
+			local Humanoid = EnemyChar:FindFirstChildOfClass("Humanoid")
 			if Humanoid then
+				Effects.Effect(Player, "Guns", "Hit", EnemyChar)
 				Humanoid:TakeDamage(Damage)
 			end
 		end
@@ -80,6 +95,8 @@ function SetupCaster(Player, Config)
 end
 
 function Fire(Player, Info, HitPosition)
+	local ToolInfo = Info.ToolInfo
+	
 	local Tool = Info.Tool
 	local Handle = Tool:WaitForChild("Handle")
 	local FirePoint = Tool:FindFirstChild("FirePoint") or Handle:FindFirstChild("FirePoint") or Handle
@@ -94,6 +111,9 @@ function Fire(Player, Info, HitPosition)
 	
 	local MinSpread = Config.MinSpread
 	local MaxSpread = Config.MaxSpread
+	
+	local VerticalRecoil = GetValue(Config.VerticalRecoil)
+	local HorizontalRecoil = GetValue(Config.HorizontalRecoil)
 	
 	local CosmeticBullet = BulletParts:FindFirstChild(Config.Bullet) or BulletParts:WaitForChild("DefaultTracer")
 	
@@ -121,10 +141,12 @@ function Fire(Player, Info, HitPosition)
 
 	local ModifiedBulletSpeed = (Direction * Speed)
 	
+	Effects.Effect(Player, "Guns", "Fire", Handle, ToolInfo.Sounds.Fire)
+	Effects.Effect(Player, "Recoil", VerticalRecoil, HorizontalRecoil)
 	Caster:Fire(FirePos, Direction, ModifiedBulletSpeed, CastBehavior)
 end
 
-function _GS.Setup(Player, Tool_, Config_)
+function _GS.Setup(Player, Tool_, ToolInfo, Config_)
 	local CooldownHandler = Cooldowns.Get(Player)
 	
 	local Config = GetConfig(Config_)
@@ -155,6 +177,8 @@ function _GS.Setup(Player, Tool_, Config_)
 		
 		Caster = Caster,
 		CooldownHandler = CooldownHandler,
+		
+		ToolInfo = ToolInfo,
 	}
 	
 	return {
@@ -164,6 +188,8 @@ function _GS.Setup(Player, Tool_, Config_)
 
 			PlayersEquipped[Player] = nil
 		end,
+		
+		["ClientData"] = true,
 	}
 end
 

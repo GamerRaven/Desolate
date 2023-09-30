@@ -29,7 +29,7 @@ ToolEquip.OnServerInvoke = function(Player, ToolName)
 	local ToolModule = TypeFolder:FindFirstChild(ToolName)
 	if ToolModule then else return end
 	
-	PlayersEquip[Player] = require(ToolModule)(ToolsResources, Player) or {}
+	PlayersEquip[Player] = require(ToolModule)(ToolsResources, Info, Player) or {}
 	
 	return PlayersEquip[Player].ClientData
 end

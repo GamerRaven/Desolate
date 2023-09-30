@@ -17,7 +17,6 @@ local Equipping = false
 function _T.Equip(ToolName)
 	local Info = ToolsInfo[ToolName]
 	if Info then else return end
-	
 	if Equipping then Equipping(Frameworks) Equipping = false return end
 	
 	local Type = Info.Type or "Guns"

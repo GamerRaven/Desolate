@@ -10,16 +10,24 @@ local GunFire = Net.ReferenceBridge("GunFire")
 local I_HitPosition = Net.ReferenceIdentifier("Gun_HitPosition")
 
 return function(Frameworks, ToolName, Info)
-	ToolEquip:InvokeServerAsync(ToolName)
+	local EquipSuccess = ToolEquip:InvokeServerAsync(ToolName)
+	if EquipSuccess then else return end
 	
 	local Holdable = Info.Holdable
 	
+	local Animator = Frameworks.Animations
 	local Camera = Frameworks.Camera
 	local Input = Frameworks.Input
 	local Utility = Frameworks.Utility
 	local Cooldowns = Utility.Cooldowns
 	
 	Camera.ToggleEvent:Fire(true)
+	
+	local Animations = Info.Animations
+	local AnimationTrack = Animator.Play(Animations.Equip)
+	AnimationTrack.Ended:Connect(function()
+		Animator.Play(Animations.Idle)
+	end)
 	
 	local InputHandler = Input.New(Enum.UserInputType.MouseButton1, "Both")
 	
@@ -32,7 +40,11 @@ return function(Frameworks, ToolName, Info)
 			[I_HitPosition] = HitPosition,
 		})
 
-		Cooldowns.Set(ToolName, EndTime) 
+		Cooldowns.Set(ToolName, EndTime)
+		
+		if Success then
+			Animator.Play(Animations.Fire)
+		end
 	end
 	
 	local Holding = false
@@ -57,6 +69,9 @@ return function(Frameworks, ToolName, Info)
 		if HoldingConnection then
 			HoldingConnection:Disconnect()
 		end
+		
+		Animator.Stop(Animations.Equip)
+		Animator.Stop(Animations.Idle)
 		
 		ToolUnequip:Fire()
 		InputHandler:Destroy()

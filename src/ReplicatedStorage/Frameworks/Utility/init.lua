@@ -10,6 +10,8 @@ local Character = Player.Character
 if not Character or not Character.Parent then
 	Character = Player.CharacterAdded:Wait()
 end
+
+local Hum = Character:WaitForChild("Humanoid")
 local HumRP = Character:WaitForChild("HumanoidRootPart")
 
 local Mouse = Player:GetMouse()
@@ -18,6 +20,7 @@ local CurrentCamera = workspace.CurrentCamera
 local _U = {
 	["GoodSignal"] = GoodSignal,
 	["Cooldowns"] = Cooldowns,
+	["CharacterUpdated"] = GoodSignal.new()
 }
 
 function _U.Raycast(StartCFrame, Direction, IgnoreList)
@@ -48,6 +51,17 @@ function _U.Init(Frameworks)
 			return _U.Raycast(StartCFrame, Direction * 1000, IgnoreList)
 		end
 	end
+
+	local function ConnectNew(Hum_)
+		Hum_.Died:Connect(function()
+			Character = Player.CharacterAdded:Wait()
+
+			ConnectNew(Character:WaitForChild("Humanoid"))
+			_U.CharacterUpdated:Fire(Character)
+		end)
+	end
+
+	ConnectNew(Hum)
 end
 
 return _U

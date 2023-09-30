@@ -1,7 +1,12 @@
 local Frameworks = {}
 
 local Priority = {
-	[1] = "Utility"
+	[1] = "Utility",
+	[2] = "Camera",
+	[3] = "Input",
+	[4] = "Inventory",
+	[5] = "Tools",
+	[6] = "Effects" -- Always have effects set to last
 }
 
 for _, Module in pairs(script:GetChildren()) do
@@ -24,7 +29,8 @@ for _, Name in pairs(Priority) do
 	RunFramework(Frameworks[Name])
 end
 
-for _, Framework in pairs(Frameworks) do
+for Name, Framework in pairs(Frameworks) do
+	if table.find(Priority, Name) then continue end
 	RunFramework(Framework)
 end
 

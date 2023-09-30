@@ -33,8 +33,8 @@ function _I.Init(Frameworks_)
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
 	
 	for Index, Keycode in pairs(Keycodes) do
-		local InputHandler = Input.New(Enum.KeyCode[Keycode], true)
-		InputHandler.TriggerEvent:Connect(function()
+		local InputHandler = Input.New(Enum.KeyCode[Keycode])
+		InputHandler.TriggerEvent:Connect(function(State)
 			local ToolName = MainInventory[Index]
 			if ToolName then Tools.Equip(ToolName) end
 		end)
