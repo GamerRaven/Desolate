@@ -15,4 +15,6 @@ function _U.Weld(a, b, setCframe)
 	return w
 end
 
+_U.Cooldowns = require(script:WaitForChild("Cooldowns"))
+
 return _U

@@ -3,6 +3,8 @@ local RS = game:GetService("ReplicatedStorage")
 local Modules = RS:WaitForChild("Modules")
 local GoodSignal = require(Modules:WaitForChild("GoodSignal"))
 
+local Cooldowns = require(script:WaitForChild("Cooldowns"))
+
 local Player = game:GetService("Players").LocalPlayer
 local Character = Player.Character
 if not Character or not Character.Parent then
@@ -14,7 +16,8 @@ local Mouse = Player:GetMouse()
 local CurrentCamera = workspace.CurrentCamera
 
 local _U = {
-	["GoodSignal"] = GoodSignal
+	["GoodSignal"] = GoodSignal,
+	["Cooldowns"] = Cooldowns,
 }
 
 function _U.Raycast(StartCFrame, Direction, IgnoreList)
@@ -23,7 +26,7 @@ function _U.Raycast(StartCFrame, Direction, IgnoreList)
 	Params.FilterDescendantsInstances = IgnoreList
 
 	local RaycastResult = workspace:Raycast(StartCFrame.Position, Direction, Params)
-	local HitPosition = RaycastResult and RaycastResult.Position or Direction
+	local HitPosition = RaycastResult and RaycastResult.Position or StartCFrame.Position + Direction
 
 	return Direction, HitPosition, RaycastResult
 end
